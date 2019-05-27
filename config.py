@@ -31,7 +31,7 @@ _C.snapshot_iter = 2000
 _C.gt_min_area = -1
 
 # max target box number in an image
-_C.max_box_num = 50
+_C.max_box_num = 200
 
 
 #

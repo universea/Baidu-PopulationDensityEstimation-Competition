@@ -25,6 +25,7 @@ from models.yolov3 import YOLOv3
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval, Params
 from config import cfg
+import six
 
 
 def infer():
@@ -36,8 +37,8 @@ def infer():
     model.build_model()
     outputs = model.get_pred()
     input_size = cfg.input_size
-    #place = fluid.CUDAPlace(0) if cfg.use_gpu else fluid.CPUPlace()
-    place = fluid.CPUPlace()
+    place = fluid.CUDAPlace(0) if cfg.use_gpu else fluid.CPUPlace()
+    #place = fluid.CPUPlace()
     exe = fluid.Executor(place)
     # yapf: disable
     if cfg.weights:
@@ -53,9 +54,17 @@ def infer():
         image_names.append(cfg.image_name)
         print('image_names = ',image_names)
     else:
-        for image_name in os.listdir(cfg.image_path):
+        files = os.listdir(cfg.image_path)
+        files.sort()
+        for image_name in files:
             if image_name.split('.')[-1] in ['jpg', 'png']:
                 image_names.append(image_name)
+    
+    if os.path.exists('result.csv'):
+        os.remove('result.csv')
+    csv_labels = open("result.csv","a+")
+    csv_labels.write("id,predicted"+"\n")
+    i = 1
     for image_name in image_names:
         infer_reader = reader.infer(input_size, os.path.join(cfg.image_path, image_name))
         label_names, _ = reader.get_label_infos()
@@ -72,13 +81,23 @@ def infer():
         labels = bboxes[:, 0].astype('int32')
         scores = bboxes[:, 1].astype('float32')
         boxes = bboxes[:, 2:].astype('float32')
+        print(image_name)
         print(labels)
+        print(len(labels))
         print(scores)
-        print(len(boxes))
+        print(len(scores[scores>0.49]))
+        #print(len(boxes))
         path = os.path.join(cfg.image_path, image_name)
-        box_utils.draw_boxes_on_image(path, boxes, scores, labels, label_names, cfg.draw_thresh)
-
-
+        #box_utils.draw_boxes_on_image(path, boxes, scores, labels, label_names, cfg.draw_thresh)
+        csv_labels = open("result.csv","a+")
+        people_sum = len(scores[scores>0.49])
+        if people_sum == 0:
+            people_sum = len(scores[scores>0.45])
+        if people_sum == 0:
+            people_sum = len(scores[scores>0.42])
+        csv_labels.write(image_name+","+str(people_sum)+"\n")
+        i+=1
+        csv_labels.close()
 if __name__ == '__main__':
     args = parse_args()
     print_arguments(args)

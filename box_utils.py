@@ -165,8 +165,8 @@ def draw_boxes_on_image(image_path, boxes, scores, labels, label_names, score_th
         ax.text(x1, y1, '{} {:.4f}'.format(label_names[label], score), 
                 verticalalignment='bottom', horizontalalignment='left',
                 bbox={'facecolor': colors[label], 'alpha': 0.5, 'pad': 0},
-                fontsize=8, color='white')
-        print("\t {:15s} at {:25} score: {:.5f}".format(label_names[int(label)], map(int, list(box)), score))
+                fontsize=8, color='red')
+        #print("\t {:15s} at {:25} score: {:.5f}".format(label_names[(label)], map(int, list(box)), score))
     image_name = image_name.replace('jpg', 'png')
     plt.axis('off')
     plt.gca().xaxis.set_major_locator(plt.NullLocator())

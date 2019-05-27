@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 np.random.seed(41)
 
 #0为背景
-classname_to_id = {"1": 1, "2": 2}
+classname_to_id = {"body": 1, "head": 2}
 
 class Csv2CoCo:
 
@@ -136,23 +136,23 @@ if __name__ == '__main__':
     # 创建必须的文件夹
     if not os.path.exists('%scoco/annotations/'%saved_coco_path):
         os.makedirs('%scoco/annotations/'%saved_coco_path)
-    if not os.path.exists('%scoco/images/train2017/'%saved_coco_path):
-        os.makedirs('%scoco/images/train2017/'%saved_coco_path)
-    if not os.path.exists('%scoco/images/val2017/'%saved_coco_path):
-        os.makedirs('%scoco/images/val2017/'%saved_coco_path)
+    if not os.path.exists('%scoco/train2017/'%saved_coco_path):
+        os.makedirs('%scoco/train2017/'%saved_coco_path)
+    if not os.path.exists('%scoco/val2017/'%saved_coco_path):
+        os.makedirs('%scoco/val2017/'%saved_coco_path)
     # 把训练集转化为COCO的json格式
     l2c_train = Csv2CoCo(image_dir=image_dir,total_annos=total_csv_annotations)
     train_instance = l2c_train.to_coco(train_keys)
     l2c_train.save_coco_json(train_instance, '%scoco/annotations/instances_train2017.json'%saved_coco_path)
     i = 0
     for file in train_keys:
-        shutil.copy(image_dir+file,"%scoco/images/train2017/"%saved_coco_path)
+        shutil.copy(image_dir+file,"%scoco/train2017/"%saved_coco_path)
         if(i%200 == 0):
             print(i)
         i+=1
     i = 0
     for file in val_keys:
-        shutil.copy(image_dir+file,"%scoco/images/val2017/"%saved_coco_path)
+        shutil.copy(image_dir+file,"%scoco/val2017/"%saved_coco_path)
         if(i%100 == 0):
             print(i)
         i+=1

@@ -14,20 +14,25 @@ with open('train.json','r') as flist:
         type = jsons['annotations'][i]['type']
         if type == "bbox":
             for annotation in annotations:
+                ymin = annotation['y']
+                xmin = annotation['x']
                 w = annotation['w']
                 h = annotation['h']
-                ymin = annotation['y']
-                xmin = annotation['x']
-                label = "1"
-                csv_labels.write(img_path+","+str(xmin)+","+str(ymin)+","+str(w)+","+str(h)+","+label+"\n")
+                xmax = xmin + w
+                ymax = ymin + h
+                label = "body"
+                csv_labels.write(img_path+","+str(xmin)+","+str(ymin)+","+str(xmax)+","+str(ymax)+","+label+"\n")
         else:
+            pass
             for annotation in annotations:
-                w = 10
-                h = 10
+                w = 2
+                h = 2
                 ymin = annotation['y']
                 xmin = annotation['x']
-                label = "1"
-                csv_labels.write(img_path+","+str(xmin)+","+str(ymin)+","+str(w)+","+str(h)+","+label+"\n")
+                xmax = xmin + w
+                ymax = ymin + h
+                label = "head"
+                csv_labels.write(img_path+","+str(xmin)+","+str(ymin)+","+str(xmax)+","+str(ymax)+","+label+"\n")
         print(i)
 csv_labels.close()
 print('success')

@@ -69,7 +69,11 @@ def train():
         momentum=cfg.momentum)
     optimizer.minimize(loss)
 
-    place = fluid.CUDAPlace(0) if cfg.use_gpu else fluid.CPUPlace()
+   
+    if cfg.use_gpu:
+        place = fluid.CUDAPlace(0) 
+    else:
+        place = fluid.CPUPlace()
     exe = fluid.Executor(place)
     exe.run(fluid.default_startup_program())
 
